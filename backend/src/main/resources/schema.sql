@@ -219,5 +219,38 @@ INSERT INTO parking_lot (name, address, total_spots, hourly_rate, daily_max_rate
 INSERT INTO users (username, password, email, phone, name, role, status) VALUES
 ('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5E', 'admin@parking.com', '13800138000', '系统管理员', 'ADMIN', 'ACTIVE');
 
+-- 事务日志表（分布式事务补偿机制）
+CREATE TABLE IF NOT EXISTS transaction_log (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    transaction_id VARCHAR(50) NOT NULL UNIQUE COMMENT '全局事务ID',
+    transaction_type VARCHAR(50) NOT NULL COMMENT '事务类型:PAYMENT_CREATE/PAYMENT_PROCESS/VEHICLE_ENTRY/VEHICLE_EXIT等',
+    business_key VARCHAR(100) COMMENT '业务键(支付单号/车牌号等)',
+    plate_number VARCHAR(20) COMMENT '车牌号',
+    idempotent_key VARCHAR(100) COMMENT '幂等键',
+    state VARCHAR(30) DEFAULT 'PENDING' COMMENT '事务状态',
+    request_data TEXT COMMENT '请求数据(JSON)',
+    response_data TEXT COMMENT '响应数据(JSON)',
+    error_message TEXT COMMENT '错误信息',
+    retry_count INT DEFAULT 0 COMMENT '重试次数',
+    max_retries INT DEFAULT 3 COMMENT '最大重试次数',
+    next_retry_time DATETIME COMMENT '下次重试时间',
+    timeout_at DATETIME COMMENT '超时时间',
+    compensating_at DATETIME COMMENT '补偿开始时间',
+    compensated_at DATETIME COMMENT '补偿完成时间',
+    failed_at DATETIME COMMENT '失败时间',
+    completed_at DATETIME COMMENT '完成时间',
+    version INT DEFAULT 0 COMMENT '乐观锁版本',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_transaction_id (transaction_id),
+    INDEX idx_transaction_type (transaction_type),
+    INDEX idx_state (state),
+    INDEX idx_business_key (business_key),
+    INDEX idx_plate_number (plate_number),
+    INDEX idx_idempotent_key (idempotent_key),
+    INDEX idx_next_retry_time (next_retry_time),
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='事务日志表';
+
 -- 初始化车位数据（默认第一个停车场）
 -- 注意：车位数据将通过应用程序自动初始化
