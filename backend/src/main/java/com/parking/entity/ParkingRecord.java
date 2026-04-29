@@ -1,5 +1,6 @@
 package com.parking.entity;
 
+import com.parking.security.LicensePlateConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class ParkingRecord {
     @Column(nullable = false, unique = true)
     private String recordNumber;
 
+    @Convert(converter = LicensePlateConverter.class)
     @Column(nullable = false)
     private String plateNumber;
 

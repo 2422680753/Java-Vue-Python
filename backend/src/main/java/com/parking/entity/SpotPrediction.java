@@ -1,5 +1,6 @@
 package com.parking.entity;
 
+import com.parking.security.LicensePlateConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class SpotPrediction {
     @Column(nullable = false)
     private Long parkingLotId;
 
+    @Convert(converter = LicensePlateConverter.class)
     @Column(nullable = false)
     private String plateNumber;
 
