@@ -1,5 +1,7 @@
 package com.parking.transaction;
 
+import com.parking.security.LicensePlateConverter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -25,6 +27,7 @@ public class TransactionLog {
     @Column(length = 64)
     private String businessKey;
 
+    @Convert(converter = LicensePlateConverter.class)
     @Column(length = 32)
     private String plateNumber;
 

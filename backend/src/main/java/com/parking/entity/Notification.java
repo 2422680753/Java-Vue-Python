@@ -1,5 +1,6 @@
 package com.parking.entity;
 
+import com.parking.security.LicensePlateConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,7 @@ public class Notification {
     @Column
     private String targetPhone;
 
+    @Convert(converter = LicensePlateConverter.class)
     @Column
     private String plateNumber;
 

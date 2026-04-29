@@ -40,4 +40,11 @@ public interface ParkingRecordRepository extends JpaRepository<ParkingRecord, Lo
 
     @Query("SELECT p FROM ParkingRecord p WHERE p.plateNumber = :plateNumber ORDER BY p.entryTime DESC")
     List<ParkingRecord> findAllByPlateNumberOrderByEntryTimeDesc(@Param("plateNumber") String plateNumber);
+
+    @Query("SELECT p FROM ParkingRecord p WHERE p.parkingLot.id = :parkingLotId AND p.entryTime BETWEEN :startTime AND :endTime ORDER BY p.entryTime")
+    List<ParkingRecord> findEntryRecordsForLotInTimeRange(
+        @Param("parkingLotId") Long parkingLotId,
+        @Param("startTime") LocalDateTime startTime,
+        @Param("endTime") LocalDateTime endTime
+    );
 }

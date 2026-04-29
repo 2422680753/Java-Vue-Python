@@ -1,5 +1,6 @@
 package com.parking.entity;
 
+import com.parking.security.LicensePlateConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Convert(converter = LicensePlateConverter.class)
     @Column(nullable = false, unique = true)
     private String plateNumber;
 

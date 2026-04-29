@@ -1,5 +1,6 @@
 package com.parking.entity;
 
+import com.parking.security.LicensePlateConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,7 @@ public class ParkingSpot {
     @Column(nullable = false)
     private String status = "AVAILABLE";
 
+    @Convert(converter = LicensePlateConverter.class)
     @Column
     private String currentPlateNumber;
 
